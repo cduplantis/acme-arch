@@ -1,0 +1,22 @@
+@startuml
+!include <c4/C4_Context.puml>  
+
+'ref http://plantuml.com/stdlib
+!include <office/Users/user.puml>
+!include <office/Users/mobile_user.puml>
+
+'LAYOUT_WITH_LEGEND
+
+title System Context diagram for MyAcme System
+
+Person(customer, Customer , "<$user> <$mobile_user>\n A customer of the ACME, with insurance products" )
+Person(agent, Agent , "<$user> <$mobile_user>\n A agent who works for ACME to promote, sell or service insurance products" )
+
+System(acme_system, "MyAcme System", "Allows customers to view information about their accounts, and make payments.")
+
+System_Ext(data_warehouse, "External Oracle Data", "Stores all of the information about customers, accounts, transactions, etc. for analytical and reporting sourcing")
+
+Rel(agent, acme_system, "Uses")
+Rel(customer, acme_system, "Uses")
+Rel(acme_system, data_warehouse, "archivees historical data")
+@enduml

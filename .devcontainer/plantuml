@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+${JAVA_HOME}/bin/java -Djava.library.path=bin  \
+        -classpath $CLASSPATH  \
+        -Djetty.contextpath=/ \
+        -jar /plantuml-server/dependency/jetty-runner.jar /plantuml-server/plantuml.war "$@"

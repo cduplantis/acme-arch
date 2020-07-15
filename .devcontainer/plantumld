@@ -1,0 +1,100 @@
+#!/bin/bash
+
+COLOR_SUCCESS="\\033[1;32m"
+COLOR_FAILURE="\\033[1;31m"
+COLOR_WARNING="\\033[1;33m"
+COLOR_NORMAL="\\033[0;39m"
+
+pidfile=/var/run/plantuml-server.pid
+logfile=/var/log/plantuml-server.err
+
+name="plantuml-server"
+start() {
+    echo -e "Start $name using classpath $CLASSPATH \n"
+    touch "${logfile}"
+     > /dev/null 2> "${logfile}" &
+    echo $! > $pidfile
+}
+
+status() {
+    if [ -f "$pidfile" ]; then
+        pid=`cat "$pidfile"`
+        if [ -e "/proc/$pid" ] ; then
+            # process by this pid is running.
+            if cat /proc/${pid}/cmdline | grep "plantuml-server" | grep "java"  > /dev/null 2>&1; then
+                exit 0
+            else
+                echo "$COLOR_FAILURE Something else is using this ${pid}! $COLOR_NORMAL This bad and should not happen."
+                return 4
+            fi
+
+        else
+            return 2 # program is dead but pid file exists
+        fi
+    else
+        return 3 # program is not running
+    fi
+}
+
+stop() {
+    # Try a few times to kill TERM the program
+    if status; then
+        pid=`cat "$pidfile"`
+        echo "Killing $name (pid $pid)"
+        kill -HUP $pid
+        # Wait for it to exit.
+        for i in `seq 1 5`; do
+            echo "Waiting $name (pid $pid) to die..."
+            status || break
+            sleep 1
+        done
+        if status ; then
+            echo "$name stop failed; still running."
+        else
+            echo "$name stopped."
+            rm $pidfile
+        fi
+    fi
+}
+
+echo_success() {
+  echo -n -e $"[$COLOR_SUCCESS  OK  $COLOR_NORMAL]"
+  echo -ne "\r"
+  return 0
+}
+
+case "$1" in
+    start)
+        if [ -e $pidfile ] ; then
+            pid=$(cat $pidfile)
+            echo -n -e "Application Component is already running under $COLOR_WARNING $pid $COLOR_NORMAL \n"
+        else
+            start
+        fi
+    ;;
+    stop)
+        stop ;;
+    force-stop) force_stop ;;
+    status)
+        status
+        code=$?
+        if [ $code -eq 0 ]; then
+            echo_success && echo -e "\t $name is running, process `cat $pidfile`"
+        else
+            echo -e " \t $name is $COLOR_WARNING not running $COLOR_NORMAL"
+        fi
+        exit $code
+    ;;
+    restart)
+        stop && start
+    ;;
+    help)
+        echo "Usage: plantumld {start|stop|force-stop|status|restart}"
+        exit 3
+    ;;
+    *)
+        echo "Usage: plantumld {start|stop|force-stop|status|restart}"
+        exit 3
+    ;;
+esac
+exit $?

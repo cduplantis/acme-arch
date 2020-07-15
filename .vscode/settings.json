@@ -1,0 +1,11 @@
+{
+    "plantuml.commandArgs": [
+
+    
+    ],
+    "plantuml.diagramsRoot": "diagrams/src",
+    "plantuml.exportOutDir": "images",
+    "plantuml.server": "http://localhost:8080",
+    "plantuml.urlResult": "MarkDown"
+
+}
