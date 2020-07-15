@@ -6,7 +6,7 @@ The following document presents an architecural plan for the MyAcme application.
 
 ACME CORP. has an existing digital asset called MyACME consisting of a web portal and mobile web app. It’s 2-3 year old, heavily utilized, but is not meeting the needs of the company. A $2 million investment to enhance the asset has been approved. 
 
-![MyAcme System Context Diagram](./images/system_context/system-context.png)
+![MyAcme System Context Diagram](./diagrams/generated/system_context/system_context.png)
 
 ## Problem/Context
 

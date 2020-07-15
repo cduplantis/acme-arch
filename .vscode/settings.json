@@ -4,8 +4,7 @@
     
     ],
     "plantuml.diagramsRoot": "diagrams/src",
-    "plantuml.exportOutDir": "images",
+    "plantuml.exportOutDir": "diagrams/generated",
     "plantuml.server": "http://localhost:8080",
-    "plantuml.urlResult": "MarkDown"
 
 }
